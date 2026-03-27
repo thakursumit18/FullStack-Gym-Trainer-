@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import PageWrapper from '../components/PageWrapper';
+import AnimatedButton from '../components/AnimatedButton';
 
 const goals = [{ value: 'lose_fat', label: '🔥 Lose Fat' }, { value: 'gain_muscle', label: '💪 Gain Muscle' }, { value: 'maintain', label: '⚖️ Maintain' }];
 const bodyTypes = [{ value: 'ectomorph', label: 'Ectomorph (Slim)' }, { value: 'mesomorph', label: 'Mesomorph (Athletic)' }, { value: 'endomorph', label: 'Endomorph (Stocky)' }];
@@ -30,8 +33,10 @@ export default function Signup() {
   );
 
   return (
+    <PageWrapper>
     <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4 py-8">
-      <div className="w-full max-w-md bg-slate-800 rounded-2xl p-8 shadow-xl">
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}
+        className="w-full max-w-md bg-slate-800 rounded-2xl p-8 shadow-xl">
         <h1 className="text-3xl font-bold text-orange-500 mb-1">Create Account 🏋️</h1>
         <p className="text-slate-400 mb-6 text-sm">Start your fitness journey today</p>
         {error && <div className="bg-red-500/20 border border-red-500 text-red-400 rounded-lg px-4 py-2 mb-4 text-sm">{error}</div>}
@@ -50,12 +55,13 @@ export default function Signup() {
           <select className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white outline-none focus:ring-2 focus:ring-orange-500" value={form.bodyType} onChange={e => set('bodyType', e.target.value)}>
             {bodyTypes.map(b => <option key={b.value} value={b.value}>{b.label}</option>)}
           </select>
-          <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
+          <AnimatedButton type="submit" disabled={loading} className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50">
             {loading ? 'Creating account...' : 'Create Account'}
-          </button>
+          </AnimatedButton>
         </form>
         <p className="text-slate-400 text-sm mt-4 text-center">Already have an account? <Link to="/login" className="text-orange-400 hover:underline">Login</Link></p>
-      </div>
+      </motion.div>
     </div>
+    </PageWrapper>
   );
 }

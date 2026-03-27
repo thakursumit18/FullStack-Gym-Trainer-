@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api/axios';
+import PageWrapper from '../components/PageWrapper';
+import ExerciseModal from '../components/ExerciseModal';
 
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const todayName = days[new Date().getDay()];
@@ -14,10 +17,10 @@ export default function Workout() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
     catch { return {}; }
   });
+  const [selectedExercise, setSelectedExercise] = useState(null);
 
   useEffect(() => {
     api.get('/workout').then(r => { setPlan(r.data.plan); setLoading(false); });
-    // Clear old day keys from localStorage
     Object.keys(localStorage).forEach(key => {
       if (key.startsWith('workout_checks_') && key !== STORAGE_KEY)
         localStorage.removeItem(key);
@@ -34,100 +37,140 @@ export default function Workout() {
   const current = plan.find(d => d.day === selected);
   const currentChecks = current?.exercises.filter((_, i) => checked[`${selected}_${i}`]).length || 0;
   const total = current?.exercises.length || 0;
+  const pct = total ? Math.round((currentChecks / total) * 100) : 0;
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-slate-400">Loading workout plan...</div>;
+  if (loading) return (
+    <div className="flex items-center justify-center h-screen">
+      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+        className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full" />
+    </div>
+  );
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-white mb-2">Weekly Workout Plan 🏋️</h1>
-      <p className="text-slate-400 mb-6">Personalized based on your goal</p>
+    <PageWrapper>
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="mb-6">
+          <h1 className="text-3xl font-bold text-white">Weekly Workout Plan 🏋️</h1>
+          <p className="text-slate-400 mt-1">Click any exercise to see details & tips</p>
+        </motion.div>
 
-      {/* Day Tabs */}
-      <div className="flex gap-2 flex-wrap mb-6">
-        {plan.map(d => (
-          <button key={d.day} onClick={() => setSelected(d.day)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${selected === d.day ? 'bg-orange-500 text-white' : d.day === todayName ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}>
-            {d.day.slice(0, 3)}
-            {d.day === todayName && <span className="ml-1 text-xs">•</span>}
-          </button>
-        ))}
-      </div>
-
-      {current && (
-        <div className="bg-slate-800 rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-xl font-bold text-white">{current.day}</h2>
-              <p className="text-orange-400 font-medium">{current.focus}</p>
-            </div>
-            <div className="flex items-center gap-3">
-              {selected === todayName && current.focus !== 'Rest Day' && (
-                <span className="text-sm text-slate-400">
-                  <span className="text-orange-400 font-bold">{currentChecks}</span>/{total} done
-                </span>
-              )}
-              {current.day === todayName && (
-                <span className="bg-orange-500/20 text-orange-400 text-xs px-3 py-1 rounded-full border border-orange-500/30">Today</span>
-              )}
-            </div>
-          </div>
-
-          {/* Progress bar for today */}
-          {selected === todayName && current.focus !== 'Rest Day' && (
-            <div className="mb-5">
-              <div className="w-full bg-slate-700 rounded-full h-2">
-                <div
-                  className="bg-orange-500 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${total ? (currentChecks / total) * 100 : 0}%` }}
-                />
-              </div>
-              {currentChecks === total && total > 0 && (
-                <p className="text-green-400 text-sm mt-2 font-medium">🎉 All exercises completed! Great work!</p>
-              )}
-            </div>
-          )}
-
-          {current.focus === 'Rest Day' ? (
-            <div className="text-center py-8">
-              <div className="text-5xl mb-3">😴</div>
-              <p className="text-slate-300 font-medium">Rest & Recover</p>
-              <p className="text-slate-500 text-sm mt-1">Your muscles grow during rest. Take it easy today!</p>
-              {current.exercises.map((ex, i) => (
-                <p key={i} className="text-slate-400 text-sm mt-2">{ex.name}</p>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {current.exercises.map((ex, i) => {
-                const isChecked = !!checked[`${selected}_${i}`];
-                const isToday = selected === todayName;
-                return (
-                  <div key={i}
-                    className={`flex items-center justify-between rounded-xl px-5 py-4 transition-all ${isChecked ? 'bg-green-500/10 border border-green-500/30' : 'bg-slate-700/50'}`}>
-                    <div className="flex items-center gap-3">
-                      <span className="text-orange-500 font-bold text-sm w-6">{i + 1}</span>
-                      <span className={`font-medium transition-all ${isChecked ? 'line-through text-slate-500' : 'text-white'}`}>
-                        {ex.name}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm">
-                      <span className="text-slate-400">{ex.sets} sets</span>
-                      <span className="text-orange-400 font-medium">{ex.reps} reps</span>
-                      {isToday && (
-                        <button
-                          onClick={() => toggle(selected, i)}
-                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isChecked ? 'bg-green-500 border-green-500 text-white' : 'border-slate-500 hover:border-orange-400'}`}>
-                          {isChecked && <span className="text-xs">✓</span>}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+        {/* Day Tabs */}
+        <div className="flex gap-2 flex-wrap mb-6">
+          {plan.map((d, i) => (
+            <motion.button key={d.day}
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setSelected(d.day)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${selected === d.day ? 'bg-orange-500 text-white' : d.day === todayName ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}>
+              {d.day.slice(0, 3)}
+              {d.day === todayName && <span className="ml-1 text-xs">•</span>}
+            </motion.button>
+          ))}
         </div>
-      )}
-    </div>
+
+        <AnimatePresence mode="wait">
+          {current && (
+            <motion.div key={selected}
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+              className="bg-slate-800 rounded-2xl p-6">
+
+              {/* Header */}
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <h2 className="text-xl font-bold text-white">{current.day}</h2>
+                  <p className="text-orange-400 font-medium">{current.focus}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  {selected === todayName && current.focus !== 'Rest Day' && (
+                    <span className="text-sm text-slate-400">
+                      <span className="text-orange-400 font-bold">{currentChecks}</span>/{total}
+                    </span>
+                  )}
+                  {current.day === todayName && (
+                    <span className="bg-orange-500/20 text-orange-400 text-xs px-3 py-1 rounded-full border border-orange-500/30">Today</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Progress bar */}
+              {selected === todayName && current.focus !== 'Rest Day' && (
+                <div className="mb-5">
+                  <div className="w-full bg-slate-700 rounded-full h-2.5 overflow-hidden">
+                    <motion.div
+                      className="h-2.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${pct}%` }}
+                      transition={{ duration: 0.5, ease: 'easeOut' }}
+                    />
+                  </div>
+                  <AnimatePresence>
+                    {currentChecks === total && total > 0 && (
+                      <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                        className="text-green-400 text-sm mt-2 font-medium">
+                        🎉 All exercises completed! Incredible work!
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+
+              {/* Rest Day */}
+              {current.focus === 'Rest Day' ? (
+                <div className="text-center py-10">
+                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="text-6xl mb-3">😴</motion.div>
+                  <p className="text-slate-300 font-medium text-lg">Rest & Recover</p>
+                  <p className="text-slate-500 text-sm mt-1">Your muscles grow during rest. Take it easy today!</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {current.exercises.map((ex, i) => {
+                    const isChecked = !!checked[`${selected}_${i}`];
+                    const isToday = selected === todayName;
+                    return (
+                      <motion.div key={i}
+                        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+                        whileHover={{ x: 3 }}
+                        className={`flex items-center justify-between rounded-xl px-5 py-4 cursor-pointer transition-all ${isChecked ? 'bg-green-500/10 border border-green-500/30' : 'bg-slate-700/50 hover:bg-slate-700'}`}
+                        onClick={() => setSelectedExercise(ex)}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-orange-500 font-bold text-sm w-6">{i + 1}</span>
+                          <div>
+                            <span className={`font-medium transition-all ${isChecked ? 'line-through text-slate-500' : 'text-white'}`}>
+                              {ex.name}
+                            </span>
+                            <p className="text-slate-500 text-xs mt-0.5">Tap for details & tips</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm">
+                          <span className="text-slate-400 hidden sm:block">{ex.sets} sets</span>
+                          <span className="text-orange-400 font-medium">{ex.reps} reps</span>
+                          {isToday && (
+                            <motion.button
+                              whileTap={{ scale: 0.85 }}
+                              onClick={e => { e.stopPropagation(); toggle(selected, i); }}
+                              className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${isChecked ? 'bg-green-500 border-green-500 text-white' : 'border-slate-500 hover:border-orange-400'}`}>
+                              <AnimatePresence mode="wait">
+                                {isChecked && (
+                                  <motion.span key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="text-xs font-bold">✓</motion.span>
+                                )}
+                              </AnimatePresence>
+                            </motion.button>
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Exercise Modal */}
+        <ExerciseModal exercise={selectedExercise} onClose={() => setSelectedExercise(null)} />
+      </div>
+    </PageWrapper>
   );
 }

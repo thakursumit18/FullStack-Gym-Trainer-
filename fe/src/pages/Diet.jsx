@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import api from '../api/axios';
+import PageWrapper from '../components/PageWrapper';
 
 const mealIcons = { breakfast: '🌅', lunch: '☀️', snack: '🍎', dinner: '🌙' };
 
@@ -11,9 +13,15 @@ export default function Diet() {
     api.get('/diet').then(r => { setDiet(r.data); setLoading(false); });
   }, []);
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-slate-400">Loading diet plan...</div>;
+  if (loading) return (
+    <div className="flex items-center justify-center h-screen">
+      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+        className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full" />
+    </div>
+  );
 
   return (
+    <PageWrapper>
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-white mb-2">Daily Diet Plan 🥗</h1>
       <p className="text-slate-400 mb-6">Budget-friendly Indian meals tailored to your goal</p>
@@ -32,8 +40,9 @@ export default function Diet() {
 
       {/* Meals */}
       <div className="grid md:grid-cols-2 gap-5">
-        {Object.entries(diet.meals).map(([key, meal]) => (
-          <div key={key} className="bg-slate-800 rounded-2xl p-6">
+        {Object.entries(diet.meals).map(([key, meal], i) => (
+          <motion.div key={key} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
+            whileHover={{ y: -3 }} className="bg-slate-800 rounded-2xl p-6 hover:shadow-xl hover:shadow-black/20 transition-shadow">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{mealIcons[key]}</span>
@@ -52,7 +61,7 @@ export default function Diet() {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
         ))}
       </div>
 
@@ -60,5 +69,6 @@ export default function Diet() {
         💡 <strong className="text-slate-300">Tip:</strong> Drink 3–4 litres of water daily. Adjust portions based on hunger. Consistency beats perfection.
       </div>
     </div>
+    </PageWrapper>
   );
 }
