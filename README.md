@@ -4,76 +4,122 @@
 
 ---
 
-## 🚀 Live Features
+## 🌐 Live Demo
+
+| Service | Platform | URL |
+|---|---|---|
+| Frontend | Vercel | https://gymtrainer.vercel.app |
+| Backend | Render | https://gymtrainer-backend.onrender.com |
+| Database | MongoDB Atlas | cluster0.xcucpuc.mongodb.net |
+
+---
+
+## 🚀 Features
+
+### 🏠 Landing Page
+- Full-screen parallax hero with animated glow orbs
+- Auto-advancing feature slideshow (4 slides)
+- Animated motivational quote ticker
+- Photo gallery with hover effects
+- Scroll-triggered fade-up animations (Framer Motion)
+- Stats counter animation
+- How it works — 3 step guide
+- Target users section
+- Final CTA section with footer
 
 ### 🔐 Authentication
 - JWT-based signup & login
 - Secure password hashing with bcryptjs
-- Protected routes — unauthenticated users redirected to login
+- Protected routes — unauthenticated users redirected to home
+- Auto-logout on token expiry (401 interceptor)
 - User profile: name, age, height, weight, goal, body type
+- Password minimum 6 characters validation
 
 ### 🏋️ Workout Plan System
-- Auto-generated **7-day weekly split** based on user goal
-- 3 goal-based plans: **Lose Fat**, **Gain Muscle**, **Maintain**
+- Auto-generated 7-day weekly split based on user goal
+- 3 goal-based plans: Lose Fat, Gain Muscle, Maintain
 - Each day targets specific muscle groups with sets & reps
-- **Exercise checklist** — check off exercises as you complete them
-- Checkboxes **auto-reset every day** (stored in localStorage with date key)
+- Exercise checklist — check off exercises as you complete them
+- Checkboxes auto-reset every day (localStorage with date key)
 - Animated progress bar showing completion %
-- 🎉 Completion message when all exercises are done
+- Completion message when all exercises are done
+- Click any exercise → Exercise Detail Modal
+
+### 🔍 Exercise Detail Modal
+- Real exercise images from Wger open-source fitness library
+- 45+ exercises mapped with unique verified image URLs
+- Zero API calls — hardcoded direct URLs for instant loading
+- Target muscle group, description, 4 form tips
+- Fade + scale spring animation, close on backdrop/Escape
 
 ### 🥗 Diet Plan System
-- Daily meal plan generated from user **weight + goal**
+- Daily meal plan from user weight + goal + body type
 - 4 meals: Breakfast, Lunch, Snack, Dinner
-- **Indian food options** — roti, dal, rice, paneer, eggs, etc.
+- Indian food options — roti, dal, rice, paneer, eggs, etc.
 - Budget-friendly and realistic meals
 - Calorie & protein targets calculated per user
 
-### 📊 Progress Tracker
-- Log daily: **weight, body fat %, chest, waist, hips, mood, notes**
-- **Recharts-powered charts**:
-  - Weight trend (area chart)
-  - Workout consistency (bar chart)
-  - Body measurements (line chart)
-  - Body fat % (area chart)
-- Streak tracking with **current + longest streak**
-- Workout consistency % over 30 days
-- Full activity log table with mood indicators
+### 📊 Progress Tracker (5 tabs)
+- **Overview** — Weight trend area chart + workout consistency bar chart
+- **Body** — BMI calculator with animated scale bar + Body Fat % chart + measurements line chart
+- **Workouts** — Mood breakdown + full activity log table
+- **Log Today** — weight, body fat %, chest, waist, hips, mood picker, notes, workout checkbox
+- **Feedback** — Star rating, category, goal satisfaction, what worked, improvement, usage frequency, recommend
 
 ### 🧠 Smart Dashboard
-- **Smart message banner** — contextual motivation based on behavior:
-  - Skipped yesterday → "Let's get back on track 💪"
-  - 5+ days this week → "Incredible consistency 🔥"
-  - New user → "Start your first workout 🚀"
-  - Time-of-day greetings
-- **Streak card** with 7-day dot visualization
-- **Goal progress bar** — animated % toward target weight
+- Smart message banner — 7 contextual motivations based on behavior
+- Streak card with 7-day dot visualization + longest streak
+- Goal progress bar — animated % toward target weight
+- Stats row: current weight, workouts done, today status
 - Today's workout preview + diet summary
 - Quick weight log directly from dashboard
 
-### 🎬 Animations & UX (Framer Motion)
+### 📈 BMI Calculator
+- Auto-calculated from user height + latest logged weight
+- Animated color-coded scale bar (Blue → Green → Yellow → Red)
+- Moving pointer showing exact BMI position
+- Category: Underweight / Normal / Overweight / Obese
+
+### 🤖 AI FitBot Chatbot
+- Powered by Google Gemini 2.5 Flash
+- Answers all fitness, diet, body composition questions
+- Speaks English + Hinglish naturally
+- Personalized using user profile (weight, height, goal, age)
+- Floating button with pulse animation
+- 6 quick prompt buttons
+- Full chat history maintained
+- Typing indicator (3 bouncing dots)
+
+### 💬 Feedback System
+- Stored in MongoDB with full user context
+- Fields: rating, category, goal satisfaction, what worked, improvement, usage frequency, would recommend
+- Admin can view all feedback via API
+
+### 🎬 Animations (Framer Motion)
 - Page transitions — fade + slide between all routes
-- Staggered card entrance animations on dashboard
+- Staggered card entrance on dashboard
 - Animated streak counter with number flip
 - Smooth progress bar fill animation
 - Exercise checkbox scale animation
 - Card hover lift effect
-- Navbar animated active pill indicator (spring physics)
-- Animated button tap/hover scale effect
-- Day tab slide transition on workout page
+- Navbar animated active pill (spring physics)
+- Scroll-triggered fade-up on home page
+- Parallax hero scroll effect
 
-### 🔍 Exercise Detail Modal
-- Click any exercise to open a modal with:
-  - **Real exercise image** from Wger open-source fitness library
-  - Target muscle group
-  - Exercise description
-  - 4 form tips
-  - Sets & reps display
-- 45+ exercises mapped with unique verified images
-- Hardcoded direct URLs — **zero API calls**, instant loading
-- Fade + scale modal animation
-- Close on backdrop click or Escape key
+### 🛡️ Security
+- Helmet security headers
+- Rate limiting — 100 req/15min general, 10 for auth, 15/min for chat
+- Body size limit — 10kb max payload
+- CORS configured for production
+- Input sanitization on signup/login
+- Strong JWT secret
 
-### 🛡️ Admin Panel
+### 📱 Mobile Responsive
+- Hamburger menu with animated open/close
+- Responsive grids on all pages
+- Touch-friendly checkboxes and buttons
+
+### 🛠️ Admin Panel
 - Admin-only route (set `isAdmin: true` in MongoDB)
 - View all workout plans by goal
 - Exercise breakdown per day
@@ -82,19 +128,21 @@
 
 ## 🧱 Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | React 19 + Vite |
-| Styling | Tailwind CSS v4 |
-| Animations | Framer Motion |
-| Charts | Recharts |
-| HTTP Client | Axios |
-| Routing | React Router v7 |
-| Backend | Node.js + Express v5 |
-| Database | MongoDB + Mongoose |
-| Auth | JWT + bcryptjs |
-| Dev Server | Nodemon |
-| Exercise Images | Wger Open Source API |
+| Layer | Technology | Version |
+|---|---|---|
+| Frontend | React + Vite | 19.x / 8.x |
+| Styling | Tailwind CSS | v4 |
+| Animations | Framer Motion | 12.x |
+| Charts | Recharts | 3.x |
+| HTTP Client | Axios | 1.x |
+| Routing | React Router | v7 |
+| Backend | Node.js + Express | v5 |
+| Database | MongoDB + Mongoose | 9.x |
+| Auth | JWT + bcryptjs | — |
+| AI | Google Gemini 2.5 Flash | — |
+| Security | Helmet + express-rate-limit | — |
+| Dev Server | Nodemon | 3.x |
+| Exercise Images | Wger Open Source API | — |
 
 ---
 
@@ -102,60 +150,68 @@
 
 ```
 FullStack-Gym-Trainer-/
-├── be/                          # Backend
+├── be/                              # Backend
 │   ├── config/
-│   │   └── db.js                # MongoDB connection
+│   │   └── db.js                    # MongoDB Atlas connection
 │   ├── controllers/
-│   │   ├── authController.js    # Signup, login, profile
-│   │   ├── workoutController.js # Workout plan generator
-│   │   ├── dietController.js    # Diet plan generator
-│   │   └── progressController.js# Progress CRUD
+│   │   ├── authController.js        # Signup, login, profile
+│   │   ├── workoutController.js     # Workout plan generator
+│   │   ├── dietController.js        # Diet plan generator
+│   │   ├── progressController.js    # Progress CRUD
+│   │   ├── feedbackController.js    # Feedback collection
+│   │   └── chatController.js        # Gemini AI chatbot
 │   ├── middleware/
-│   │   └── auth.js              # JWT protect + adminOnly
+│   │   └── auth.js                  # JWT protect + adminOnly
 │   ├── models/
-│   │   ├── User.js              # User schema
-│   │   └── Progress.js          # Progress schema
+│   │   ├── User.js                  # User schema
+│   │   ├── Progress.js              # Progress schema
+│   │   └── Feedback.js              # Feedback schema
 │   ├── routes/
 │   │   ├── authRoutes.js
 │   │   ├── workoutRoutes.js
 │   │   ├── dietRoutes.js
-│   │   └── progressRoutes.js
-│   ├── .env                     # Environment variables
-│   └── server.js                # Express entry point
+│   │   ├── progressRoutes.js
+│   │   ├── feedbackRoutes.js
+│   │   └── chatRoutes.js
+│   ├── .env.example                 # Environment variable template
+│   └── server.js                    # Express entry point
 │
-└── fe/                          # Frontend
+└── fe/                              # Frontend
     └── src/
         ├── api/
-        │   └── axios.js         # Axios instance + token interceptor
+        │   └── axios.js             # Axios instance + interceptors
         ├── components/
-        │   ├── Navbar.jsx        # Animated navbar with active pill
-        │   ├── ProtectedRoute.jsx
-        │   ├── PageWrapper.jsx   # Page transition wrapper
-        │   ├── AnimatedButton.jsx
-        │   ├── StreakCard.jsx    # Streak display + 7-day dots
-        │   ├── GoalProgress.jsx  # Animated goal progress bar
-        │   ├── SmartMessage.jsx  # Contextual motivation banner
-        │   └── ExerciseModal.jsx # Exercise detail + image modal
+        │   ├── Navbar.jsx            # Animated navbar + hamburger
+        │   ├── ProtectedRoute.jsx    # Auth guard
+        │   ├── PageWrapper.jsx       # Page transition wrapper
+        │   ├── AnimatedButton.jsx    # Reusable animated button
+        │   ├── ScrollToTop.jsx       # Scroll reset on route change
+        │   ├── StreakCard.jsx        # Streak + 7-day dots
+        │   ├── GoalProgress.jsx      # Animated goal progress bar
+        │   ├── SmartMessage.jsx      # Contextual motivation banner
+        │   ├── ExerciseModal.jsx     # Exercise detail + image modal
+        │   └── ChatBot.jsx           # AI FitBot floating chatbot
         ├── context/
-        │   └── AuthContext.jsx   # Global auth state
+        │   └── AuthContext.jsx       # Global auth state
         └── pages/
+            ├── Home.jsx              # Landing page
             ├── Login.jsx
             ├── Signup.jsx
             ├── Dashboard.jsx
             ├── Workout.jsx
             ├── Diet.jsx
             ├── Progress.jsx
-            └── Admin.jsx
+            ├── Admin.jsx
+            └── NotFound.jsx          # 404 page
 ```
 
 ---
 
-## ⚙️ Getting Started
+## ⚙️ Getting Started (Local)
 
 ### Prerequisites
 - Node.js v18+
-- MongoDB running locally (or MongoDB Atlas)
-- MongoDB Compass (optional, for GUI)
+- MongoDB Atlas account (or local MongoDB)
 
 ### 1. Clone the repo
 ```bash
@@ -169,14 +225,17 @@ cd be
 npm install
 ```
 
-Create a `.env` file in `be/`:
+Create `.env` from `.env.example`:
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/gym-trainer
-JWT_SECRET=your_secret_key_here
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/gym-trainer
+JWT_SECRET=your_strong_secret_here
+GEMINI_API_KEY=your_gemini_api_key_here
+CLIENT_URL=http://localhost:5173
 ```
 
-Start the backend:
+> Get free Gemini API key from: https://aistudio.google.com/app/apikey
+
 ```bash
 npm run dev
 ```
@@ -192,8 +251,6 @@ npm run dev
 ```
 http://localhost:5173
 ```
-
-> The frontend proxies all `/api` requests to `http://localhost:5000` via Vite config.
 
 ---
 
@@ -225,42 +282,73 @@ http://localhost:5173
 | POST | `/api/progress` | Log/update today's progress (protected) |
 | GET | `/api/progress` | Get last 60 entries (protected) |
 
+### Feedback
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/feedback` | Submit feedback (protected) |
+| GET | `/api/feedback/mine` | Get own feedback (protected) |
+| GET | `/api/feedback/all` | Get all feedback (admin only) |
+
+### Chat
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/chat` | Send message to FitBot AI (protected) |
+
 ---
 
 ## 🗄️ Database Models
 
 ### User
 ```js
-{
-  name, email, password,   // required
-  age, height, weight,     // numbers
-  goal,                    // 'lose_fat' | 'gain_muscle' | 'maintain'
-  bodyType,                // 'ectomorph' | 'mesomorph' | 'endomorph'
-  isAdmin                  // boolean, default false
-}
+{ name, email, password, age, height, weight,
+  goal: 'lose_fat' | 'gain_muscle' | 'maintain',
+  bodyType: 'ectomorph' | 'mesomorph' | 'endomorph',
+  isAdmin: Boolean }
 ```
 
 ### Progress
 ```js
-{
-  user,              // ref to User
-  date,              // 'YYYY-MM-DD'
-  weight,            // kg
-  bodyFat,           // %
-  chest, waist, hips,// cm
-  workoutCompleted,  // boolean
-  mood,              // 'great'|'good'|'okay'|'tired'|'bad'
-  notes              // string
-}
+{ user, date, weight, bodyFat, chest, waist, hips,
+  workoutCompleted, mood: 'great'|'good'|'okay'|'tired'|'bad', notes }
+```
+
+### Feedback
+```js
+{ user, rating(1-5), category, goalSatisfaction(1-5),
+  whatWorked, improvement, wouldRecommend, usageFrequency }
 ```
 
 ---
 
 ## 🔑 Admin Access
 
-To grant admin access, open **MongoDB Compass**, find your user document in the `gym-trainer` database and set:
+In MongoDB Atlas, find your user document and set:
 ```json
 { "isAdmin": true }
+```
+
+---
+
+## 🚀 Deployment
+
+| Part | Platform | Config |
+|---|---|---|
+| Frontend | Vercel | Root: `fe`, Build: `npm run build`, Output: `dist` |
+| Backend | Render | Root: `be`, Start: `npm start` |
+| Database | MongoDB Atlas | Free M0 cluster |
+
+### Vercel Environment Variables
+```
+VITE_API_URL = https://your-render-app.onrender.com/api
+```
+
+### Render Environment Variables
+```
+MONGO_URI     = mongodb+srv://...
+JWT_SECRET    = your_secret
+GEMINI_API_KEY = your_key
+CLIENT_URL    = https://your-vercel-app.vercel.app
+NODE_ENV      = production
 ```
 
 ---
@@ -274,26 +362,18 @@ To grant admin access, open **MongoDB Compass**, find your user document in the 
 
 ---
 
-## 🚫 Out of Scope (MVP)
-
-- AI posture detection
-- Video streaming
-- Payment integration
-- Social features
-- Push notifications
-
----
-
 ## 📦 Dependencies
 
 ### Backend
 ```
-express, mongoose, dotenv, cors, bcryptjs, jsonwebtoken, nodemon
+express, mongoose, dotenv, cors, bcryptjs, jsonwebtoken,
+helmet, express-rate-limit, @google/generative-ai, nodemon
 ```
 
 ### Frontend
 ```
-react, react-dom, react-router-dom, axios, framer-motion, recharts, tailwindcss
+react, react-dom, react-router-dom, axios,
+framer-motion, recharts, tailwindcss
 ```
 
 ---
@@ -301,13 +381,14 @@ react, react-dom, react-router-dom, axios, framer-motion, recharts, tailwindcss
 ## 🙌 Credits
 
 - Exercise images — [Wger Workout Manager](https://wger.de) (open source, CC license)
-- Icons — Emoji native
+- AI — [Google Gemini](https://ai.google.dev) (Gemini 2.5 Flash)
 - Charts — [Recharts](https://recharts.org)
 - Animations — [Framer Motion](https://www.framer.com/motion)
+- Photos — [Unsplash](https://unsplash.com) (free license)
 
 ---
 
 <div align="center">
-  <p>Built with ❤️ using the MERN Stack</p>
+  <p>Built with ❤️ by Team GymTrainer using the MERN Stack</p>
   <p>💪 Stay consistent. Results follow.</p>
 </div>
