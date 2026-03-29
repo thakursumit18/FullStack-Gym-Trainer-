@@ -8,4 +8,16 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Auto logout if token is expired or invalid
+api.interceptors.response.use(
+  res => res,
+  err => {
+    if (err.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/';
+    }
+    return Promise.reject(err);
+  }
+);
+
 export default api;

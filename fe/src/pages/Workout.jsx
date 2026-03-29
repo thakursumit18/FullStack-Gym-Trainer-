@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api/axios';
 import PageWrapper from '../components/PageWrapper';
 import ExerciseModal from '../components/ExerciseModal';
+import AnimatedButton from '../components/AnimatedButton';
 
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const todayName = days[new Date().getDay()];
@@ -13,19 +14,26 @@ export default function Workout() {
   const [plan, setPlan] = useState([]);
   const [selected, setSelected] = useState(todayName);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [checked, setChecked] = useState(() => {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
     catch { return {}; }
   });
   const [selectedExercise, setSelectedExercise] = useState(null);
 
-  useEffect(() => {
-    api.get('/workout').then(r => { setPlan(r.data.plan); setLoading(false); });
+  const fetchPlan = () => {
+    setLoading(true);
+    setError('');
+    api.get('/workout')
+      .then(r => { setPlan(r.data.plan); setLoading(false); })
+      .catch(() => { setError('Failed to load workout plan. Please try again.'); setLoading(false); });
     Object.keys(localStorage).forEach(key => {
       if (key.startsWith('workout_checks_') && key !== STORAGE_KEY)
         localStorage.removeItem(key);
     });
-  }, []);
+  };
+
+  useEffect(() => { fetchPlan(); }, []);
 
   const toggle = (day, index) => {
     const key = `${day}_${index}`;
@@ -40,9 +48,21 @@ export default function Workout() {
   const pct = total ? Math.round((currentChecks / total) * 100) : 0;
 
   if (loading) return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex flex-col items-center justify-center h-screen gap-3">
       <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
         className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full" />
+      <p className="text-slate-500 text-sm">Loading your workout plan...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="flex flex-col items-center justify-center h-screen gap-4 px-4">
+      <div className="text-5xl">😕</div>
+      <p className="text-white font-semibold">Could not load workout plan</p>
+      <p className="text-slate-400 text-sm text-center">{error}</p>
+      <AnimatedButton onClick={fetchPlan} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium">
+        Try Again
+      </AnimatedButton>
     </div>
   );
 
@@ -75,7 +95,6 @@ export default function Workout() {
               transition={{ duration: 0.2 }}
               className="bg-slate-800 rounded-2xl p-6">
 
-              {/* Header */}
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h2 className="text-xl font-bold text-white">{current.day}</h2>
@@ -93,7 +112,6 @@ export default function Workout() {
                 </div>
               </div>
 
-              {/* Progress bar */}
               {selected === todayName && current.focus !== 'Rest Day' && (
                 <div className="mb-5">
                   <div className="w-full bg-slate-700 rounded-full h-2.5 overflow-hidden">
@@ -115,7 +133,6 @@ export default function Workout() {
                 </div>
               )}
 
-              {/* Rest Day */}
               {current.focus === 'Rest Day' ? (
                 <div className="text-center py-10">
                   <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="text-6xl mb-3">😴</motion.div>
@@ -132,8 +149,7 @@ export default function Workout() {
                         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
                         whileHover={{ x: 3 }}
                         className={`flex items-center justify-between rounded-xl px-5 py-4 cursor-pointer transition-all ${isChecked ? 'bg-green-500/10 border border-green-500/30' : 'bg-slate-700/50 hover:bg-slate-700'}`}
-                        onClick={() => setSelectedExercise(ex)}
-                      >
+                        onClick={() => setSelectedExercise(ex)}>
                         <div className="flex items-center gap-3">
                           <span className="text-orange-500 font-bold text-sm w-6">{i + 1}</span>
                           <div>
@@ -168,7 +184,6 @@ export default function Workout() {
           )}
         </AnimatePresence>
 
-        {/* Exercise Modal */}
         <ExerciseModal exercise={selectedExercise} onClose={() => setSelectedExercise(null)} />
       </div>
     </PageWrapper>

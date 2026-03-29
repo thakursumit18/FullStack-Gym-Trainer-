@@ -9,14 +9,13 @@ export default function GoalProgress({ entries }) {
   const weights = entries.filter(e => e.weight).map(e => e.weight);
   const currentWeight = weights[weights.length - 1] || startWeight;
 
-  // Target weight based on goal
   let targetWeight, label, description;
   if (goal === 'lose_fat') {
-    targetWeight = startWeight * 0.9; // 10% loss target
+    targetWeight = startWeight * 0.9;
     label = 'Fat Loss Goal';
     description = `Target: ${targetWeight.toFixed(1)} kg`;
   } else if (goal === 'gain_muscle') {
-    targetWeight = startWeight * 1.08; // 8% gain target
+    targetWeight = startWeight * 1.08;
     label = 'Muscle Gain Goal';
     description = `Target: ${targetWeight.toFixed(1)} kg`;
   } else {
@@ -81,11 +80,7 @@ function ProgressBar({ label, description, pct, color, note }) {
       <div className="flex items-center justify-between mt-2">
         <p className="text-slate-500 text-xs">{note}</p>
         {pct >= 100 && (
-          <motion.span
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="text-xs text-green-400 font-semibold"
-          >
+          <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-xs text-green-400 font-semibold">
             🎉 Goal Reached!
           </motion.span>
         )}

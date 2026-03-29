@@ -5,23 +5,15 @@ function calcStreaks(entries) {
   let current = 0, longest = 0, temp = 0;
   const today = new Date().toISOString().split('T')[0];
   const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-
-  // current streak — must include today or yesterday to be active
   const hasToday = sorted[0]?.date === today && sorted[0]?.workoutCompleted;
   const hasYesterday = sorted[0]?.date === yesterday && sorted[0]?.workoutCompleted;
   if (hasToday || hasYesterday) {
-    for (const e of sorted) {
-      if (e.workoutCompleted) current++;
-      else break;
-    }
+    for (const e of sorted) { if (e.workoutCompleted) current++; else break; }
   }
-
-  // longest streak
   for (const e of sorted) {
     if (e.workoutCompleted) { temp++; longest = Math.max(longest, temp); }
     else temp = 0;
   }
-
   return { current, longest };
 }
 
@@ -64,7 +56,6 @@ export default function StreakCard({ entries }) {
         </motion.div>
       </div>
 
-      {/* Streak dots — last 7 days */}
       <div className="flex gap-1.5 mt-4">
         {Array.from({ length: 7 }).map((_, i) => {
           const d = new Date(Date.now() - (6 - i) * 86400000).toISOString().split('T')[0];

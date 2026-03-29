@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 function getMessage(entries, user) {
   const today = new Date().toISOString().split('T')[0];
   const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-
   const todayLog = entries.find(e => e.date === today);
   const yesterdayLog = entries.find(e => e.date === yesterday);
   const last7 = entries.filter(e => e.date >= new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0]);
@@ -12,25 +11,18 @@ function getMessage(entries, user) {
 
   if (entries.length === 0)
     return { text: `Welcome, ${user?.name?.split(' ')[0]}! Start your first workout today 💪`, color: 'blue', icon: '🚀' };
-
   if (todayLog?.workoutCompleted)
     return { text: "You crushed today's workout! Rest up and come back stronger 🏆", color: 'green', icon: '✅' };
-
   if (yesterdayLog && !yesterdayLog.workoutCompleted)
     return { text: "You skipped yesterday — no worries, let's get back on track 💪", color: 'orange', icon: '⚡' };
-
   if (last7Done >= 5)
     return { text: `Incredible consistency this week — ${last7Done}/7 days! You're unstoppable 🔥`, color: 'orange', icon: '🔥' };
-
   if (last7Done >= 3)
     return { text: `Good work this week — ${last7Done}/7 days done. Push for one more! 💪`, color: 'green', icon: '💪' };
-
   if (hour < 12)
     return { text: "Good morning! Start your day strong with today's workout 🌅", color: 'blue', icon: '🌅' };
-
   if (hour < 17)
     return { text: "Afternoon energy is peak energy — time to hit the gym! ⚡", color: 'orange', icon: '⚡' };
-
   return { text: "Evening workout? Let's go — consistency beats perfection 🌙", color: 'purple', icon: '🌙' };
 }
 

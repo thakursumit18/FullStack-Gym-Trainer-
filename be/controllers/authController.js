@@ -7,9 +7,17 @@ const generateToken = (id) =>
 const signup = async (req, res) => {
   const { name, email, password, age, height, weight, goal, bodyType } = req.body;
   try {
-    if (await User.findOne({ email }))
+    if (!name?.trim() || !email?.trim() || !password)
+      return res.status(400).json({ message: 'Name, email and password are required' });
+    if (password.length < 6)
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    if (await User.findOne({ email: email.toLowerCase().trim() }))
       return res.status(400).json({ message: 'Email already exists' });
-    const user = await User.create({ name, email, password, age, height, weight, goal, bodyType });
+    const user = await User.create({
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      password, age, height, weight, goal, bodyType
+    });
     res.status(201).json({ token: generateToken(user._id), user: { _id: user._id, name: user.name, email: user.email, goal: user.goal, isAdmin: user.isAdmin } });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -19,7 +27,9 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    if (!email?.trim() || !password)
+      return res.status(400).json({ message: 'Email and password are required' });
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
     if (!user || !(await user.matchPassword(password)))
       return res.status(401).json({ message: 'Invalid credentials' });
     res.json({ token: generateToken(user._id), user: { _id: user._id, name: user.name, email: user.email, goal: user.goal, isAdmin: user.isAdmin } });

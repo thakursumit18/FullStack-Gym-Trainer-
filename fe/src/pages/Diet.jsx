@@ -2,21 +2,41 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import api from '../api/axios';
 import PageWrapper from '../components/PageWrapper';
+import AnimatedButton from '../components/AnimatedButton';
 
 const mealIcons = { breakfast: '🌅', lunch: '☀️', snack: '🍎', dinner: '🌙' };
 
 export default function Diet() {
   const [diet, setDiet] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    api.get('/diet').then(r => { setDiet(r.data); setLoading(false); });
-  }, []);
+  const fetchDiet = () => {
+    setLoading(true);
+    setError('');
+    api.get('/diet')
+      .then(r => { setDiet(r.data); setLoading(false); })
+      .catch(() => { setError('Failed to load diet plan. Please try again.'); setLoading(false); });
+  };
+
+  useEffect(() => { fetchDiet(); }, []);
 
   if (loading) return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex flex-col items-center justify-center h-screen gap-3">
       <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
         className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full" />
+      <p className="text-slate-500 text-sm">Loading your diet plan...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="flex flex-col items-center justify-center h-screen gap-4 px-4">
+      <div className="text-5xl">😕</div>
+      <p className="text-white font-semibold">Could not load diet plan</p>
+      <p className="text-slate-400 text-sm text-center">{error}</p>
+      <AnimatedButton onClick={fetchDiet} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium">
+        Try Again
+      </AnimatedButton>
     </div>
   );
 
@@ -26,7 +46,6 @@ export default function Diet() {
       <h1 className="text-3xl font-bold text-white mb-2">Daily Diet Plan 🥗</h1>
       <p className="text-slate-400 mb-6">Budget-friendly Indian meals tailored to your goal</p>
 
-      {/* Macros Summary */}
       <div className="grid grid-cols-2 gap-4 mb-8">
         <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-5 text-center">
           <div className="text-3xl font-bold text-orange-400">{diet.calories}</div>
@@ -38,7 +57,6 @@ export default function Diet() {
         </div>
       </div>
 
-      {/* Meals */}
       <div className="grid md:grid-cols-2 gap-5">
         {Object.entries(diet.meals).map(([key, meal], i) => (
           <motion.div key={key} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}

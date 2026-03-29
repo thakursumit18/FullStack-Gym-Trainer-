@@ -9,4 +9,16 @@ export default defineConfig({
       '/api': { target: 'http://localhost:5000', changeOrigin: true },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('recharts')) return 'charts';
+          if (id.includes('framer-motion')) return 'motion';
+          if (id.includes('node_modules')) return 'vendor';
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
 })
