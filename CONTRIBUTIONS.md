@@ -7,7 +7,7 @@
 
 ## 1. 🧠 Nishant Kumar — Backend Architecture, Auth & Deployment
 
-**Role:** Backend Lead + DevOps
+**Role:** Backend Lead 
 
 ### What was built:
 Nishant was responsible for the entire backend foundation. He set up the Node.js + Express server, configured MongoDB Atlas connection using Mongoose, and designed all three database schemas (User, Progress, Feedback).
