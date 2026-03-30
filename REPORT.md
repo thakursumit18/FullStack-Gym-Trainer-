@@ -52,7 +52,7 @@ The application targets beginners, college students, and budget-conscious gym us
 |---|---|---|
 | Nishant Kumar | Backend Lead + DevOps | Server, Auth, Security, MongoDB Atlas, Render Deployment |
 | Navpreet Tripathy | Core Features Developer | Workout Engine, Diet Engine, Admin Panel, Feedback API |
-| Sumit Thakur | Frontend Lead + AI Engineer | UI/UX, Animations,FitBot AI, Exercise Modal |
+| Sumit Thakur | Frontend Lead + AI Engineer | UI/UX, Animations,Home page,FitBot AI, Exercise Modal |
 | Prajakta Sahoo | Data Visualization Engineer | Progress Tracker, Charts, BMI Calculator, Body Fat Tracker |
 | Soumya Smruti | Auth + Integration + Deployment | Login/Signup, Axios, AuthContext, Vercel Deployment |
 
