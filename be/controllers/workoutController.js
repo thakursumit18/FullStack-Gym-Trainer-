@@ -28,6 +28,87 @@ const WORKOUT_PLANS = {
   ],
 };
 
+const MUSCLE_PLANS = {
+  abs: {
+    label: 'Abs',
+    icon: '🔥',
+    description: 'Core-focused workout to build a strong, defined midsection',
+    exercises: [
+      { name: 'Crunches', sets: 4, reps: 25 },
+      { name: 'Leg Raises', sets: 4, reps: 20 },
+      { name: 'Plank', sets: 3, reps: '60 sec' },
+      { name: 'Bicycle Crunches', sets: 3, reps: 20 },
+      { name: 'Mountain Climbers', sets: 3, reps: 30 },
+      { name: 'Cable Crunch', sets: 3, reps: 15 },
+      { name: 'Hanging Knee Raises', sets: 3, reps: 15 },
+    ],
+  },
+  legs: {
+    label: 'Legs',
+    icon: '🦵',
+    description: 'Complete lower body workout targeting quads, hamstrings, glutes and calves',
+    exercises: [
+      { name: 'Squats', sets: 4, reps: 12 },
+      { name: 'Romanian Deadlift', sets: 4, reps: 10 },
+      { name: 'Leg Press', sets: 4, reps: 12 },
+      { name: 'Lunges', sets: 3, reps: 12 },
+      { name: 'Leg Curl', sets: 3, reps: 12 },
+      { name: 'Leg Extension', sets: 3, reps: 15 },
+      { name: 'Calf Raises', sets: 4, reps: 20 },
+    ],
+  },
+  chest: {
+    label: 'Chest',
+    icon: '💪',
+    description: 'Full chest workout targeting upper, middle and lower pectorals',
+    exercises: [
+      { name: 'Bench Press', sets: 4, reps: 10 },
+      { name: 'Incline Dumbbell Press', sets: 4, reps: 10 },
+      { name: 'Cable Flyes', sets: 3, reps: 12 },
+      { name: 'Push-ups', sets: 3, reps: 20 },
+      { name: 'Dips', sets: 3, reps: 12 },
+      { name: 'Dumbbell Press', sets: 3, reps: 12 },
+    ],
+  },
+  arms: {
+    label: 'Full Arms',
+    icon: '💪',
+    description: 'Complete arms workout — shoulders, biceps and triceps for maximum size',
+    exercises: [
+      { name: 'Overhead Press', sets: 4, reps: 10 },
+      { name: 'Lateral Raises', sets: 3, reps: 15 },
+      { name: 'Barbell Curl', sets: 4, reps: 12 },
+      { name: 'Hammer Curl', sets: 3, reps: 12 },
+      { name: 'Tricep Pushdown', sets: 4, reps: 12 },
+      { name: 'Skull Crushers', sets: 3, reps: 10 },
+      { name: 'Arnold Press', sets: 3, reps: 10 },
+      { name: 'Preacher Curl', sets: 3, reps: 10 },
+    ],
+  },
+  back: {
+    label: 'Wider Back',
+    icon: '🏋️',
+    description: 'Back width and thickness workout for a powerful V-taper',
+    exercises: [
+      { name: 'Pull-ups', sets: 4, reps: 10 },
+      { name: 'Lat Pulldown', sets: 4, reps: 12 },
+      { name: 'Bent Over Row', sets: 4, reps: 10 },
+      { name: 'Seated Cable Row', sets: 3, reps: 12 },
+      { name: 'T-Bar Row', sets: 3, reps: 10 },
+      { name: 'Deadlift', sets: 3, reps: 6 },
+      { name: 'Hyperextensions', sets: 3, reps: 15 },
+    ],
+  },
+};
+
+const getMuscleWorkout = (req, res) => {
+  const { muscle } = req.params;
+  if (!MUSCLE_PLANS[muscle]) return res.status(404).json({ message: 'Muscle group not found' });
+  res.json(MUSCLE_PLANS[muscle]);
+};
+
+const getAllMuscleWorkouts = (req, res) => res.json(MUSCLE_PLANS);
+
 const getWorkoutPlan = (req, res) => {
   const goal = req.user.goal || 'maintain';
   const plan = WORKOUT_PLANS[goal];
@@ -46,4 +127,4 @@ const updateWorkoutDay = (req, res) => {
   res.json(WORKOUT_PLANS[goal][dayIndex]);
 };
 
-module.exports = { getWorkoutPlan, getAllWorkouts, updateWorkoutDay };
+module.exports = { getWorkoutPlan, getAllWorkouts, updateWorkoutDay, getMuscleWorkout, getAllMuscleWorkouts };
