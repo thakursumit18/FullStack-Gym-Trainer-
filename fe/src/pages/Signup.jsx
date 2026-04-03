@@ -9,7 +9,7 @@ const goals = [{ value: 'lose_fat', label: '🔥 Lose Fat' }, { value: 'gain_mus
 const bodyTypes = [{ value: 'ectomorph', label: 'Ectomorph (Slim)' }, { value: 'mesomorph', label: 'Mesomorph (Athletic)' }, { value: 'endomorph', label: 'Endomorph (Stocky)' }];
 
 export default function Signup() {
-  const [form, setForm] = useState({ name: '', email: '', password: '', phone: '', age: '', height: '', weight: '', goal: 'maintain', bodyType: 'mesomorph' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', age: '', height: '', weight: '', goal: 'maintain', bodyType: 'mesomorph' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
@@ -49,10 +49,6 @@ export default function Signup() {
           {input('name', 'Full Name')}
           {input('email', 'Email', 'email')}
           {input('password', 'Password', 'password')}
-          <div className="flex gap-2">
-            <span className="bg-slate-700 rounded-lg px-3 py-3 text-slate-300 text-sm flex items-center flex-shrink-0">+91</span>
-            <input className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-orange-500" type="tel" placeholder="Mobile number (optional)" value={form.phone} onChange={e => set('phone', e.target.value)} maxLength={10} />
-          </div>
           <div className="grid grid-cols-3 gap-3">
             {input('age', 'Age', 'number')}
             {input('height', 'Height (cm)', 'number')}
