@@ -19,8 +19,9 @@ import PremiumDiet from './pages/PremiumDiet';
 import PremiumSettings from './pages/PremiumSettings';
 import NotFound from './pages/NotFound';
 import Profile from './pages/Profile';
+import ForgotPassword from './pages/ForgotPassword';
 
-const NO_NAVBAR = ['/', '/login', '/signup'];
+const NO_NAVBAR = ['/', '/login', '/signup', '/forgot-password'];
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -30,6 +31,7 @@ function AnimatedRoutes() {
         <Route path="/" element={<HomeOrDashboard />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/workout" element={<ProtectedRoute><Workout /></ProtectedRoute>} />
         <Route path="/diet" element={<ProtectedRoute><Diet /></ProtectedRoute>} />

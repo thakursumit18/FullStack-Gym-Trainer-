@@ -26,6 +26,17 @@ const userSchema = new mongoose.Schema({
   targetWeight:    { type: Number, default: null },
   injuries:        { type: String, default: '' },
   equipment:       { type: String, enum: ['full_gym', 'home', 'minimal'], default: 'full_gym' },
+  // Mobile number
+  phone:            { type: String, default: null, sparse: true },
+  phoneVerified:    { type: Boolean, default: false },
+  // Phone OTP login fields
+  phoneOtp:         { type: String, default: null },
+  phoneOtpExpiry:   { type: Date,   default: null },
+  // OTP password reset fields
+  resetOtp:         { type: String, default: null },
+  resetOtpExpiry:   { type: Date,   default: null },
+  resetToken:       { type: String, default: null },
+  resetTokenExpiry: { type: Date,   default: null },
 }, { timestamps: true });
 
 userSchema.pre('save', async function () {
