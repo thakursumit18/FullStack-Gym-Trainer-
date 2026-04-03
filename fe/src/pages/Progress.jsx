@@ -8,14 +8,14 @@ import {
 import api from '../api/axios';
 
 const today = new Date().toISOString().split('T')[0];
-const moodEmoji = { great: '🔥', good: '😊', okay: '😐', tired: '😴', bad: '😞' };
-const moodColor = { great: 'text-orange-400', good: 'text-green-400', okay: 'text-yellow-400', tired: 'text-blue-400', bad: 'text-red-400' };
+const moodEmoji = { great: 'PEAK', good: 'GOOD', okay: 'OKAY', tired: 'LOW', bad: 'DOWN' };
+const moodColor = { great: 'text-cyan-400', good: 'text-emerald-400', okay: 'text-yellow-400', tired: 'text-blue-400', bad: 'text-red-400' };
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 text-sm shadow-xl">
-      <p className="text-slate-400 mb-1">{label}</p>
+    <div className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm shadow-xl">
+      <p className="text-slate-400 mb-1 font-mono text-xs">{label}</p>
       {payload.map((p, i) => (
         <p key={i} style={{ color: p.color }} className="font-medium">{p.name}: {p.value}{p.unit || ''}</p>
       ))}
@@ -83,55 +83,55 @@ export default function Progress() {
   };
 
   if (loading) return (
-    <div className="flex flex-col items-center justify-center h-screen gap-3">
+    <div className="flex flex-col items-center justify-center h-screen gap-3 bg-[#030712]">
       <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-        className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full" />
-      <p className="text-slate-500 text-sm">Loading your progress...</p>
+        className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full" />
+      <p className="text-slate-500 text-sm font-mono">Loading your progress...</p>
     </div>
   );
 
   if (error) return (
-    <div className="flex flex-col items-center justify-center h-screen gap-4 px-4">
-      <div className="text-5xl">😕</div>
+    <div className="flex flex-col items-center justify-center h-screen gap-4 px-4 bg-[#030712]">
       <p className="text-white font-semibold">Could not load progress</p>
       <p className="text-slate-400 text-sm text-center">{error}</p>
-      <button onClick={() => window.location.reload()} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium">Try Again</button>
+      <button onClick={() => window.location.reload()} className="bg-cyan-500 hover:bg-cyan-400 text-slate-900 px-6 py-2.5 rounded-lg text-sm font-bold">Try Again</button>
     </div>
   );
 
   const tabs = ['overview', 'body', 'workouts', 'log', 'feedback'];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-[#030712] relative">
+    <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.06] pointer-events-none" />
+    <div className="relative max-w-5xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Progress Tracker 📈</h1>
-        <p className="text-slate-400 mt-1">Track your fitness journey over time</p>
+        <h1 className="text-3xl font-bold text-white tracking-tight">Progress Tracker</h1>
+        <p className="text-slate-500 mt-1 font-mono text-sm">Track your fitness journey over time</p>
       </div>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Current Weight', value: latest ? `${latest} kg` : '—', sub: weightChange ? `${weightChange > 0 ? '+' : ''}${weightChange} kg total` : 'No data yet', color: 'orange', icon: '⚖️' },
-          { label: 'Workouts Done', value: totalWorkouts, sub: `${consistency}% consistency`, color: 'green', icon: '🏋️' },
-          { label: 'Current Streak', value: `${streak} days`, sub: streak > 0 ? 'Keep it up!' : 'Start today!', color: 'blue', icon: '🔥' },
-          { label: 'Days Logged', value: entries.length, sub: 'Total entries', color: 'purple', icon: '📅' },
+          { label: 'Current Weight', value: latest ? `${latest} kg` : '--', sub: weightChange ? `${weightChange > 0 ? '+' : ''}${weightChange} kg total` : 'No data yet', colorCls: 'text-cyan-400' },
+          { label: 'Workouts Done', value: totalWorkouts, sub: `${consistency}% consistency`, colorCls: 'text-emerald-400' },
+          { label: 'Current Streak', value: `${streak} days`, sub: streak > 0 ? 'Keep it up' : 'Start today', colorCls: 'text-violet-400' },
+          { label: 'Days Logged', value: entries.length, sub: 'Total entries', colorCls: 'text-amber-400' },
         ].map(s => (
-          <div key={s.label} className="bg-slate-800 rounded-2xl p-5">
-            <div className="text-2xl mb-2">{s.icon}</div>
-            <div className={`text-2xl font-bold text-${s.color}-400`}>{s.value}</div>
-            <div className="text-slate-300 text-xs font-medium mt-0.5">{s.label}</div>
-            <div className="text-slate-500 text-xs mt-1">{s.sub}</div>
+          <div key={s.label} className="bg-slate-900/60 backdrop-blur-sm border border-slate-800/50 rounded-2xl p-5">
+            <div className={`text-2xl font-bold ${s.colorCls}`}>{s.value}</div>
+            <div className="text-slate-300 text-xs font-medium mt-1 font-mono uppercase tracking-wider">{s.label}</div>
+            <div className="text-slate-600 text-xs mt-1">{s.sub}</div>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 bg-slate-800 p-1 rounded-xl overflow-x-auto">
+      <div className="flex gap-1 mb-6 bg-slate-900/60 border border-slate-800/50 p-1 rounded-xl overflow-x-auto">
         {tabs.map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
-            className={`flex-1 min-w-fit px-3 py-2 rounded-lg text-xs sm:text-sm font-medium capitalize transition-colors whitespace-nowrap ${activeTab === t ? 'bg-orange-500 text-white' : 'text-slate-400 hover:text-white'}`}>
-            {t === 'log' ? '+ Log' : t === 'feedback' ? '💬 Feedback' : t}
+            className={`flex-1 min-w-fit px-3 py-2 rounded-lg text-xs sm:text-sm font-medium capitalize transition-colors whitespace-nowrap ${activeTab === t ? 'bg-cyan-500 text-slate-900 font-bold' : 'text-slate-400 hover:text-white'}`}>
+            {t === 'log' ? '+ Log' : t === 'feedback' ? 'Feedback' : t}
           </button>
         ))}
       </div>
@@ -140,7 +140,7 @@ export default function Progress() {
       {activeTab === 'overview' && (
         <div className="space-y-6">
           {/* Weight Chart */}
-          <div className="bg-slate-800 rounded-2xl p-6">
+          <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-800/50 rounded-2xl p-6">
             <h2 className="text-white font-semibold mb-1">Weight Over Time</h2>
             <p className="text-slate-500 text-xs mb-5">kg — last 60 days</p>
             {weights.length < 2 ? (
@@ -165,7 +165,7 @@ export default function Progress() {
           </div>
 
           {/* Workout Consistency Bar Chart */}
-          <div className="bg-slate-800 rounded-2xl p-6">
+          <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-800/50 rounded-2xl p-6">
             <h2 className="text-white font-semibold mb-1">Workout Consistency</h2>
             <p className="text-slate-500 text-xs mb-5">1 = completed, 0 = skipped</p>
             {entries.length < 2 ? (
@@ -196,7 +196,7 @@ export default function Progress() {
           <BodyFatCard entries={entries} />
 
           {/* Body Measurements Chart */}
-          <div className="bg-slate-800 rounded-2xl p-6">
+          <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-800/50 rounded-2xl p-6">
             <h2 className="text-white font-semibold mb-1">Body Measurements</h2>
             <p className="text-slate-500 text-xs mb-5">Chest, Waist, Hips in cm — log from the Log tab</p>
             {entries.filter(e => e.chest || e.waist || e.hips).length < 2 ? (
@@ -268,7 +268,7 @@ export default function Progress() {
 
       {/* LOG TAB */}
       {activeTab === 'log' && (
-        <div className="bg-slate-800 rounded-2xl p-6">
+        <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-800/50 rounded-2xl p-6">
           <h2 className="text-white font-semibold mb-1">Log Today's Data</h2>
           <p className="text-slate-500 text-xs mb-6">{today}</p>
 
@@ -278,17 +278,17 @@ export default function Progress() {
               <div>
                 <label className="text-slate-400 text-xs mb-1 block">Weight (kg)</label>
                 <input type="number" step="0.1" placeholder="e.g. 72.5" value={form.weight} onChange={e => setForm(f => ({ ...f, weight: e.target.value }))}
-                  className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-orange-500" />
+                  className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-cyan-500/50" />
               </div>
               <div>
                 <label className="text-slate-400 text-xs mb-1 block">Body Fat %</label>
                 <input type="number" step="0.1" placeholder="e.g. 18.5" value={form.bodyFat} onChange={e => setForm(f => ({ ...f, bodyFat: e.target.value }))}
-                  className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-orange-500" />
+                  className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-cyan-500/50" />
               </div>
               <div>
                 <label className="text-slate-400 text-xs mb-1 block">Chest (cm)</label>
                 <input type="number" step="0.5" placeholder="e.g. 95" value={form.chest} onChange={e => setForm(f => ({ ...f, chest: e.target.value }))}
-                  className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-orange-500" />
+                  className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-cyan-500/50" />
               </div>
             </div>
 
@@ -297,12 +297,12 @@ export default function Progress() {
               <div>
                 <label className="text-slate-400 text-xs mb-1 block">Waist (cm)</label>
                 <input type="number" step="0.5" placeholder="e.g. 80" value={form.waist} onChange={e => setForm(f => ({ ...f, waist: e.target.value }))}
-                  className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-orange-500" />
+                  className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-cyan-500/50" />
               </div>
               <div>
                 <label className="text-slate-400 text-xs mb-1 block">Hips (cm)</label>
                 <input type="number" step="0.5" placeholder="e.g. 95" value={form.hips} onChange={e => setForm(f => ({ ...f, hips: e.target.value }))}
-                  className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-orange-500" />
+                  className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-cyan-500/50" />
               </div>
               <div>
                 <label className="text-slate-400 text-xs mb-1 block">How do you feel today?</label>
@@ -323,19 +323,19 @@ export default function Progress() {
           <div className="mt-4">
             <label className="text-slate-400 text-xs mb-1 block">Notes (optional)</label>
             <textarea rows={2} placeholder="How was your workout? Any pain or achievements?" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-              className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-orange-500 resize-none" />
+              className="w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-cyan-500/50 resize-none" />
           </div>
 
           {/* Workout toggle */}
           <label className="flex items-center gap-3 mt-4 cursor-pointer">
             <input type="checkbox" checked={form.workoutCompleted} onChange={e => setForm(f => ({ ...f, workoutCompleted: e.target.checked }))}
-              className="w-5 h-5 accent-orange-500 rounded" />
+              className="w-5 h-5 accent-cyan-500 rounded" />
             <span className="text-slate-300 font-medium">Workout completed today</span>
           </label>
 
               {saveError && <p className="text-red-400 text-xs mt-3">{saveError}</p>}
           <button onClick={handleSave} disabled={saving}
-            className="mt-4 w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors">
+            className="mt-4 w-full bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors">
             {saving ? 'Saving...' : saved ? '✅ Saved!' : "Save Today's Log"}
           </button>
         </div>
@@ -344,6 +344,7 @@ export default function Progress() {
       {/* FEEDBACK TAB */}
       {activeTab === 'feedback' && <FeedbackForm />}
 
+    </div>
     </div>
   );
 }
@@ -354,7 +355,7 @@ function BmiCard({ user, entries }) {
   const height = user?.height;
 
   if (!height || !currentWeight) return (
-    <div className="bg-slate-800 rounded-2xl p-6">
+    <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-800/50 rounded-2xl p-6">
       <h2 className="text-white font-semibold mb-1">BMI Calculator</h2>
       <div className="text-center py-8">
         <div className="text-3xl mb-2">📊</div>
@@ -378,7 +379,7 @@ function BmiCard({ user, entries }) {
   const pct = Math.min(100, Math.max(0, ((bmi - 10) / 30) * 100));
 
   return (
-    <div className="bg-slate-800 rounded-2xl p-6">
+    <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-800/50 rounded-2xl p-6">
       <div className="flex items-center justify-between mb-5">
         <div>
           <h2 className="text-white font-semibold">BMI Calculator</h2>
@@ -451,7 +452,7 @@ function BodyFatCard({ entries }) {
   };
 
   return (
-    <div className="bg-slate-800 rounded-2xl p-6">
+    <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-800/50 rounded-2xl p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-white font-semibold">Body Fat %</h2>
@@ -503,7 +504,7 @@ function BodyFatCard({ entries }) {
 }
 
 function FeedbackForm() {
-  const inputClass = 'w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-orange-500 text-sm';
+  const inputClass = 'w-full bg-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-cyan-500/50 text-sm';
   const [form, setForm] = useState({
     rating: 0,
     category: 'overall_app',
@@ -553,7 +554,7 @@ function FeedbackForm() {
   );
 
   return (
-    <div className="bg-slate-800 rounded-2xl p-6 space-y-6">
+    <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-800/50 rounded-2xl p-6 space-y-6">
       <div>
         <h2 className="text-white font-semibold text-lg">Share Your Feedback 💬</h2>
         <p className="text-slate-400 text-xs mt-1">Help us improve your experience</p>
@@ -645,7 +646,7 @@ function FeedbackForm() {
       </div>
 
       <button onClick={handleSubmit} disabled={saving}
-        className="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors">
+        className="w-full bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors">
         {saving ? 'Submitting...' : 'Submit Feedback'}
       </button>
     </div>

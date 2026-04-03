@@ -1,0 +1,14 @@
+﻿[
+    {
+        "NameTarget":  "ac-kbz6kza-shard-00-01.xcucpuc.mongodb.net",
+        "Port":  27017
+    },
+    {
+        "NameTarget":  "ac-kbz6kza-shard-00-02.xcucpuc.mongodb.net",
+        "Port":  27017
+    },
+    {
+        "NameTarget":  "ac-kbz6kza-shard-00-00.xcucpuc.mongodb.net",
+        "Port":  27017
+    }
+]
