@@ -15,6 +15,8 @@ app.use(helmet());
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:4173',
+  'https://alphatrainer.app',
+  'https://www.alphatrainer.app',
   process.env.CLIENT_URL,
 ].filter(Boolean);
 
