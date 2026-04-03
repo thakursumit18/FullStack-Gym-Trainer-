@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogIn, Shield, AlertTriangle, KeyRound, Smartphone, Mail, CheckCircle } from 'lucide-react';
+import { LogIn, Shield, AlertTriangle, KeyRound, Smartphone, Mail, CheckCircle, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import PageWrapper from '../components/PageWrapper';
@@ -11,6 +11,27 @@ const isWrongPassword = (msg = '') =>
   /invalid credentials|wrong password|incorrect password|password/i.test(msg);
 
 const inputCls = 'w-full bg-black/40 border border-slate-800/60 rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/30 transition-all font-mono text-sm';
+
+// ── Password input with show/hide toggle ─────────────────────
+function PasswordInput({ value, onChange, placeholder = 'password', className = '', ...props }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <input
+        {...props}
+        type={show ? 'text' : 'password'}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        className={`${className} pr-11`}
+      />
+      <button type="button" onClick={() => setShow(s => !s)}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors">
+        {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+      </button>
+    </div>
+  );
+}
 
 // ── OTP digit boxes (shared) ──────────────────────────────────
 function OtpBoxes({ otp, setOtp, prefix = 'ph' }) {
@@ -79,9 +100,9 @@ function EmailTab() {
           value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
 
         <div className="space-y-1">
-          <input
+          <PasswordInput
             className={`w-full bg-black/40 border rounded-lg px-4 py-3 text-white placeholder-slate-500 outline-none focus:ring-2 transition-all font-mono text-sm ${wrongPass ? 'border-red-500/60 focus:ring-red-500/40' : 'border-slate-800/60 focus:ring-cyan-500/50 focus:border-cyan-500/30'}`}
-            type="password" placeholder="password"
+            placeholder="password"
             value={form.password}
             onChange={e => { setForm({ ...form, password: e.target.value }); if (wrongPass) { setWrongPass(false); setError(''); } }}
             required />

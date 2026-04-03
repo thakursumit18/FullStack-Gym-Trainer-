@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { UserPlus, Shield } from 'lucide-react';
+import { UserPlus, Shield, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import PageWrapper from '../components/PageWrapper';
 import AnimatedButton from '../components/AnimatedButton';
@@ -16,6 +16,7 @@ export default function Signup() {
   const { signup } = useAuth();
   const navigate = useNavigate();
 
+  const [showPassword, setShowPassword] = useState(false);
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   const handleSubmit = async (e) => {
@@ -63,7 +64,19 @@ export default function Signup() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {input('name', 'Full Name')}
           {input('email', 'Email', 'email')}
-          {input('password', 'Password (min. 6 chars)', 'password')}
+          <div className="relative">
+            <input
+              className={`${inputCls} pr-11`}
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password (min. 6 chars)"
+              value={form.password}
+              onChange={e => set('password', e.target.value)}
+              required />
+            <button type="button" onClick={() => setShowPassword(s => !s)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors">
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
           <div className="flex gap-2">
             <div className="flex items-center bg-black/40 border border-slate-800/60 rounded-lg px-3 text-slate-400 text-sm font-mono shrink-0 select-none">
               🇮🇳 +91

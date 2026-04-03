@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { KeyRound, Mail, ShieldCheck, Lock, AlertTriangle, CheckCircle } from 'lucide-react';
+import { KeyRound, Mail, ShieldCheck, Lock, AlertTriangle, CheckCircle, Eye, EyeOff } from 'lucide-react';
 import api from '../api/axios';
 import AnimatedButton from '../components/AnimatedButton';
 import PageWrapper from '../components/PageWrapper';
@@ -25,6 +25,8 @@ export default function ForgotPassword() {
   const [resetToken, setResetToken] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -237,13 +239,25 @@ export default function ForgotPassword() {
                 onSubmit={resetPassword} className="space-y-4">
                 <div>
                   <label className="text-slate-400 text-xs mb-1.5 block font-mono">New Password</label>
-                  <input className={inputClass} type="password" placeholder="Min. 6 characters"
-                    value={newPassword} onChange={e => setNewPassword(e.target.value)} required />
+                  <div className="relative">
+                    <input className={`${inputClass} pr-11`} type={showNew ? 'text' : 'password'} placeholder="Min. 6 characters"
+                      value={newPassword} onChange={e => setNewPassword(e.target.value)} required />
+                    <button type="button" onClick={() => setShowNew(s => !s)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors">
+                      {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="text-slate-400 text-xs mb-1.5 block font-mono">Confirm New Password</label>
-                  <input className={inputClass} type="password" placeholder="Repeat password"
-                    value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
+                  <div className="relative">
+                    <input className={`${inputClass} pr-11`} type={showConfirm ? 'text' : 'password'} placeholder="Repeat password"
+                      value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
+                    <button type="button" onClick={() => setShowConfirm(s => !s)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors">
+                      {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
 
                 <AnimatePresence>
