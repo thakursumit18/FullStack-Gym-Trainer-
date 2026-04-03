@@ -5,12 +5,27 @@ const userSchema = new mongoose.Schema({
   name:     { type: String, required: true },
   email:    { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  age: Number,
-  height: Number,
-  weight: Number,
+  age: Number, height: Number, weight: Number,
   goal:     { type: String, enum: ['lose_fat', 'gain_muscle', 'maintain'], default: 'maintain' },
   bodyType: { type: String, enum: ['ectomorph', 'mesomorph', 'endomorph'], default: 'mesomorph' },
   isAdmin:  { type: Boolean, default: false },
+  // Profile fields
+  username:   { type: String, default: '' },
+  bio:        { type: String, default: '' },
+  location:   { type: String, default: '' },
+  avatar:     { type: String, default: '' },
+  // Premium fields
+  isPremium:       { type: Boolean, default: false },
+  premiumPlan:     { type: String, enum: ['monthly', 'quarterly', 'yearly'], default: null },
+  premiumExpiry:   { type: Date, default: null },
+  premiumOrderId:  { type: String, default: null },
+  // Premium preferences
+  dietType:        { type: String, enum: ['veg', 'non_veg'], default: 'non_veg' },
+  fitnessLevel:    { type: String, enum: ['beginner', 'intermediate', 'advanced'], default: 'beginner' },
+  workoutDays:     { type: Number, default: 5 },
+  targetWeight:    { type: Number, default: null },
+  injuries:        { type: String, default: '' },
+  equipment:       { type: String, enum: ['full_gym', 'home', 'minimal'], default: 'full_gym' },
 }, { timestamps: true });
 
 userSchema.pre('save', async function () {

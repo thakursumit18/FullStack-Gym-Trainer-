@@ -13,9 +13,13 @@ import Workout from './pages/Workout';
 import Diet from './pages/Diet';
 import Progress from './pages/Progress';
 import Admin from './pages/Admin';
+import Premium from './pages/Premium';
+import PremiumWorkout from './pages/PremiumWorkout';
+import PremiumDiet from './pages/PremiumDiet';
+import PremiumSettings from './pages/PremiumSettings';
 import NotFound from './pages/NotFound';
+import Profile from './pages/Profile';
 
-// Pages where Navbar should NOT show
 const NO_NAVBAR = ['/', '/login', '/signup'];
 
 function AnimatedRoutes() {
@@ -31,13 +35,18 @@ function AnimatedRoutes() {
         <Route path="/diet" element={<ProtectedRoute><Diet /></ProtectedRoute>} />
         <Route path="/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute adminOnly><Admin /></ProtectedRoute>} />
+        {/* Premium routes */}
+        <Route path="/premium" element={<ProtectedRoute><Premium /></ProtectedRoute>} />
+        <Route path="/premium/workout" element={<ProtectedRoute><PremiumWorkout /></ProtectedRoute>} />
+        <Route path="/premium/diet" element={<ProtectedRoute><PremiumDiet /></ProtectedRoute>} />
+        <Route path="/premium/settings" element={<ProtectedRoute><PremiumSettings /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
   );
 }
 
-// If logged in → go to dashboard, else show home page
 function HomeOrDashboard() {
   const { user, loading } = useAuth();
   if (loading) return null;

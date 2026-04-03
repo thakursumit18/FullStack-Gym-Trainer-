@@ -42,7 +42,7 @@ const generalLimit = rateLimit({
 
 const authLimit = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10, // stricter for login/signup
+  max: 50, // allow 50 login attempts per 15 minutes
   message: { message: 'Too many auth attempts, please try again in 15 minutes.' },
 });
 
@@ -64,6 +64,7 @@ app.use('/api/diet', require('./routes/dietRoutes'));
 app.use('/api/progress', require('./routes/progressRoutes'));
 app.use('/api/feedback', require('./routes/feedbackRoutes'));
 app.use('/api/chat', require('./routes/chatRoutes'));
+app.use('/api/premium', require('./routes/premiumRoutes'));
 
 app.get('/api', (req, res) => res.json({ message: 'GymTrainer API running ✅' }));
 
