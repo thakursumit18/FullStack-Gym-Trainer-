@@ -2,15 +2,17 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  name:     { type: String, required: true },
+  email:    { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  age: Number,
-  height: Number,
-  weight: Number,
-  goal: { type: String, enum: ['lose_fat', 'gain_muscle', 'maintain'], default: 'maintain' },
+  phone:    { type: String, default: '' },
+  age: Number, height: Number, weight: Number,
+  goal:     { type: String, enum: ['lose_fat', 'gain_muscle', 'maintain'], default: 'maintain' },
   bodyType: { type: String, enum: ['ectomorph', 'mesomorph', 'endomorph'], default: 'mesomorph' },
-  isAdmin: { type: Boolean, default: false },
+  isAdmin:  { type: Boolean, default: false },
+  // OTP fields
+  resetOtp:        { type: String },
+  resetOtpExpiry:  { type: Date },
 }, { timestamps: true });
 
 userSchema.pre('save', async function () {

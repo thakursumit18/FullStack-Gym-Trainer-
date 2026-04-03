@@ -13,10 +13,11 @@ import Workout from './pages/Workout';
 import Diet from './pages/Diet';
 import Progress from './pages/Progress';
 import Admin from './pages/Admin';
+import ForgotPassword from './pages/ForgotPassword';
 import NotFound from './pages/NotFound';
 
 // Pages where Navbar should NOT show
-const NO_NAVBAR = ['/', '/login', '/signup'];
+const NO_NAVBAR = ['/', '/login', '/signup', '/forgot-password'];
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -26,6 +27,7 @@ function AnimatedRoutes() {
         <Route path="/" element={<HomeOrDashboard />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/workout" element={<ProtectedRoute><Workout /></ProtectedRoute>} />
         <Route path="/diet" element={<ProtectedRoute><Diet /></ProtectedRoute>} />
