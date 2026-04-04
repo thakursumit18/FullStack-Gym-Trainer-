@@ -144,7 +144,7 @@ function MobileTab() {
   const [step, setStep] = useState(1); // 1 = enter phone, 2 = enter otp
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [sent, setSent] = useState(false);
+  const [sentMsg, setSentMsg] = useState('');
   const { updateUser } = useAuth();
   const navigate = useNavigate();
 
@@ -155,8 +155,8 @@ function MobileTab() {
     }
     setLoading(true); setError('');
     try {
-      await api.post('/auth/phone-otp', { phone: phone.trim() });
-      setSent(true);
+      const { data } = await api.post('/auth/phone-otp', { phone: phone.trim() });
+      setSentMsg(data.message);
       setStep(2);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to send OTP.');
@@ -204,7 +204,7 @@ function MobileTab() {
                 <input className={inputCls} type="tel" inputMode="numeric" placeholder="9876543210" maxLength={10}
                   value={phone} onChange={e => { setPhone(e.target.value.replace(/\D/g, '')); setError(''); }} required />
               </div>
-              <p className="text-slate-600 text-xs mt-1.5 font-mono">OTP will be sent to this number</p>
+              <p className="text-slate-600 text-xs mt-1.5 font-mono">OTP will be sent to your registered email</p>
             </div>
             <AnimatedButton type="submit" disabled={loading || phone.length !== 10}
               className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold py-3 rounded-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20">
@@ -219,17 +219,17 @@ function MobileTab() {
           <motion.form key="phone-step2" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }}
             transition={{ duration: 0.2 }} onSubmit={verifyOtp} className="space-y-5">
 
-            {sent && (
+            {sentMsg && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                 className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-lg px-4 py-2.5 text-sm flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 shrink-0" />
-                OTP sent to +91 {phone}
+                {sentMsg}
               </motion.div>
             )}
 
             <div>
               <p className="text-slate-400 text-xs mb-3 text-center font-mono">
-                Enter the 6-digit OTP sent to <span className="text-cyan-400">+91 {phone}</span>
+                Enter the 6-digit OTP sent to your <span className="text-cyan-400">registered email</span>
               </p>
               <OtpBoxes otp={otp} setOtp={setOtp} prefix="ph" />
             </div>
@@ -241,7 +241,7 @@ function MobileTab() {
             </AnimatedButton>
 
             <div className="flex items-center justify-between text-xs">
-              <button type="button" onClick={() => { setStep(1); setOtp(['','','','','','']); setError(''); setSent(false); }}
+              <button type="button" onClick={() => { setStep(1); setOtp(['','','','','','']); setError(''); setSentMsg(''); }}
                 className="text-slate-500 hover:text-slate-300 transition-colors">
                 ← Change number
               </button>

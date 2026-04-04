@@ -33,7 +33,7 @@ export default function ForgotPassword() {
 
   // ── Step 1 — Send OTP ──────────────────────────────────────
   const sendOtp = async (e) => {
-    e.preventDefault();
+    e?.preventDefault();
     setLoading(true); setError('');
     try {
       await api.post('/auth/forgot-password', { email });

@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
   injuries:        { type: String, default: '' },
   equipment:       { type: String, enum: ['full_gym', 'home', 'minimal'], default: 'full_gym' },
   // Mobile number
-  phone:            { type: String, default: null, sparse: true },
+  phone:            { type: String, default: null },
   phoneVerified:    { type: Boolean, default: false },
   // Phone OTP login fields
   phoneOtp:         { type: String, default: null },
@@ -38,6 +38,9 @@ const userSchema = new mongoose.Schema({
   resetToken:       { type: String, default: null },
   resetTokenExpiry: { type: Date,   default: null },
 }, { timestamps: true });
+
+// Unique index on phone only when phone is not null
+userSchema.index({ phone: 1 }, { unique: true, sparse: true, partialFilterExpression: { phone: { $type: 'string' } } });
 
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) return;

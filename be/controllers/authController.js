@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
 const { sendOtpEmail } = require('../utils/email');
+const { sendOtpSms } = require('../utils/sms');
 
 const generateToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -17,13 +18,13 @@ const signup = async (req, res) => {
       return res.status(400).json({ message: 'Email already exists' });
     if (phone && !/^[6-9]\d{9}$/.test(phone.trim()))
       return res.status(400).json({ message: 'Enter a valid 10-digit Indian mobile number.' });
-    if (phone && await User.findOne({ phone: phone.trim() }))
+    if (phone && phone.trim() && await User.findOne({ phone: phone.trim() }))
       return res.status(400).json({ message: 'Mobile number already registered.' });
     const user = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password, age, height, weight, goal, bodyType,
-      phone: phone?.trim() || null,
+      phone: (phone && phone.trim()) ? phone.trim() : null,
     });
     res.status(201).json({ token: generateToken(user._id), user: { _id: user._id, name: user.name, email: user.email, goal: user.goal, isAdmin: user.isAdmin } });
   } catch (err) {
@@ -61,20 +62,23 @@ const updateProfile = async (req, res) => {
 // ── FORGOT PASSWORD — send OTP ────────────────────────────────
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
+  if (!email?.trim()) return res.status(400).json({ message: 'Email is required.' });
   try {
-    const user = await User.findOne({ email: email?.toLowerCase().trim() });
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
     // Always respond OK to prevent email enumeration
     if (!user) return res.json({ message: 'If that email exists, an OTP has been sent.' });
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // Send email FIRST — only save to DB if it succeeds
+    await sendOtpEmail(user.email, otp, user.name, 'Your GymTrainer Password Reset OTP');
     user.resetOtp = otp;
     user.resetOtpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min
     user.resetToken = null;
     user.resetTokenExpiry = null;
     await user.save();
-    await sendOtpEmail(user.email, otp, user.name);
     res.json({ message: 'OTP sent to your email.' });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('[forgotPassword] Error:', err.message);
+    res.status(500).json({ message: 'Failed to send OTP. Check email configuration.' });
   }
 };
 
@@ -116,24 +120,27 @@ const resetPassword = async (req, res) => {
   }
 };
 
-// ── SEND PHONE OTP — for mobile login ────────────────────────
+// ── SEND PHONE OTP — sends OTP to registered email (Fast2SMS needs DLT verification) ──
 const sendPhoneOtp = async (req, res) => {
   const { phone } = req.body;
   if (!phone || !/^[6-9]\d{9}$/.test(phone.trim()))
     return res.status(400).json({ message: 'Enter a valid 10-digit Indian mobile number.' });
   try {
     const user = await User.findOne({ phone: phone.trim() });
-    if (!user) return res.status(404).json({ message: 'No account found with this mobile number.' });
+    if (!user) return res.status(404).json({ message: 'No account found with this mobile number. Please register first.' });
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // Send OTP to registered email — SMS gateway requires paid DLT verification
+    await sendOtpEmail(user.email, otp, user.name, 'Your GymTrainer Mobile Login OTP');
     user.phoneOtp = otp;
-    user.phoneOtpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+    user.phoneOtpExpiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
-    // ── In production replace this with an SMS gateway (Twilio / MSG91) ──
+    // Mask email: kr***@gmail.com
+    const masked = user.email.replace(/(.{2})(.+?)(@.+)$/, (_, a, b, c) => a + '*'.repeat(b.length) + c);
     console.log(`[GymTrainer] Phone OTP for ${phone}: ${otp}`);
-    // ─────────────────────────────────────────────────────────────────────
-    res.json({ message: 'OTP sent to your mobile number.' });
+    res.json({ message: `OTP sent to your registered email ${masked}` });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('[sendPhoneOtp] Error:', err.message);
+    res.status(500).json({ message: 'Failed to send OTP. ' + err.message });
   }
 };
 
